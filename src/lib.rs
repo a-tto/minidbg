@@ -21,15 +21,7 @@ impl Debugger {
     pub fn run(&mut self) {
         let options = 0;
         let pid = self.m_pid;
-        match waitpid(pid, None).expect("wait pid failed") {
-            WaitStatus::Exited(pid, status) => {
-                println!("exit!");
-            }
-            WaitStatus::Signaled(pid, status, _) => {
-                println!("signaled!");
-            }
-            _ => println!(" "),
-        }
+        waitpid(pid, None).expect("wait pid failed");
 
         loop{
             let line = linenoise::input("dbg> ");
@@ -43,9 +35,7 @@ impl Debugger {
             }
         }
     }
-}
 
-impl Debugger {
     pub fn new(prog_name: &String, pid: &Pid) -> Debugger {
         let m_prog_name = prog_name.clone();
         let m_pid = pid.clone();
@@ -61,8 +51,7 @@ impl Debugger {
         bp.enable();
         self.m_breakpoints.insert(*addr, bp);
     }
-}
-impl Debugger {
+
     fn handle_command(&mut self, line: &String) {
         let args:Vec<&str> = line.split(' ').collect();
         let command = args[0];
@@ -76,9 +65,8 @@ impl Debugger {
             println!("Unknown command\n");
         }
     }
-}
 
-impl Debugger {
+
     fn continue_execution(&self) {
         let pid = self.m_pid;
 
@@ -86,15 +74,7 @@ impl Debugger {
             ptrace::cont(pid, None);
         }
 
-        match waitpid(pid, None).expect("wait pid failed") {
-            WaitStatus::Exited(pid, status) => {
-                println!("exit!");
-            }
-            WaitStatus::Signaled(pid, status, _) => {
-                println!("signaled!");
-            }
-            _ => println!("abnormal exit"),
-        }   
+        waitpid(pid, None).expect("wait pid failed");
     }
 }
 
@@ -114,9 +94,7 @@ impl Breakpoint {
 
         Breakpoint {m_pid, m_addr, m_enabled, m_saved_data}
     }
-}
 
-impl Breakpoint {
     fn enable(&mut self) {
         unsafe{
             let pid = self.m_pid;
