@@ -13,7 +13,7 @@ use minidbg::Debugger;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if  args.len() < 2 {
-        println!("USAGE: ~~~~");
+        println!("USAGE: ./minidbg <binary_file>");
         process::exit(-1);
     }
     let prog = args[1].clone();
